@@ -38,11 +38,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
     // 4. 三角形の頂点バッファを作成
     // 頂点配列を定義
+#if true
     SimpleVertex vertices[] = {
         { -0.5f, -0.5f, 0.0f },
         { 0.0f, 0.5f, 0.0f },
         { 0.5f, -0.5f, 0.0f },
     };
+#else
+    SimpleVertex vertices[] = {
+        { -1.0f, -1.0f, 0.0f },
+        { 0.0f, 1.0f, 0.0f },
+        { 1.0f, -1.0f, 0.0f },
+};
+#endif
 
     VertexBuffer triangleVB;
     triangleVB.Init(sizeof(vertices), sizeof(vertices[0]));
