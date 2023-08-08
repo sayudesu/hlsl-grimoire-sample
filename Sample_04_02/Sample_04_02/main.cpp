@@ -6,7 +6,7 @@ struct DirectionLight
 {
     Vector3 lightDirection;
 
-    float pad;
+   float pad;
 
     Vector3 lightColor;
 };
@@ -29,15 +29,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     // step-2 ディレクションライトのデータを作成する
     DirectionLight directionLig;
 
-    directionLig.lightDirection.x = 1.0f;
+    directionLig.lightDirection.x = -1.0f;
     directionLig.lightDirection.y = -1.0f;
     directionLig.lightDirection.z = -1.0f;
 
     directionLig.lightDirection.Normalize();
 
-    directionLig.lightColor.x = 0.5f;
-    directionLig.lightColor.y = 0.5f;
-    directionLig.lightColor.z = 0.5f;
+    directionLig.lightColor.x = 1.0f;
+    directionLig.lightColor.y = 1.0f;
+    directionLig.lightColor.z = 1.0f;
 
     // step-3 球体モデルを初期化する
     ModelInitData modelInitData;

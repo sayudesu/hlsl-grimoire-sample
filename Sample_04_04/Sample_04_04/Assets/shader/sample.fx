@@ -78,10 +78,12 @@ SPSIn VSMain(SVSIn vsIn, uniform bool hasSkin)
 float4 PSMain(SPSIn psIn) : SV_Target0
 {
     // ピクセルの法線とライトの方向の内積を計算する
+    //ハーフランバート拡散照明によるライティング計算
     float t = dot(psIn.normal, directionLight.direction);
+
     t *= -1.0f;
 
-    // 内積の結果が0以下なら0にする
+    // 内積の結果が0以下なら0にするc
     if(t < 0.0f)
     {
         t = 0.0f;
@@ -99,24 +101,67 @@ float4 PSMain(SPSIn psIn) : SV_Target0
 
     // 鏡面反射の強さを求める
     t = dot(refVec, toEye);
+
     if(t < 0.0f)
     {
         t = 0.0f;
     }
 
     // 鏡面反射の強さを絞る
-    t = pow(t, 5.0f);
+    t = pow(t, 0.5f);
 
     // 鏡面反射光を求める
     float3 specularLig = directionLight.color * t;
 
+
     // 拡散反射光と鏡面反射光を足し算して、最終的な光を求める
     float3 lig = diffuseLig + specularLig;
 
-    // step-1 ライトの効果を一律で底上げする
+    float3 color1;
+    color1.x = 0.05f;
+    color1.y = 0.05f;
+    color1.z = 0.05f;
 
+    float3 color2;
+    color2.x = 0.3f;
+    color2.y = 0.3f;
+    color2.z = 0.3f;
+
+    float3 color3;
+    color3.x = 1.0f;
+    color3.y = 1.0f;
+    color3.z = 1.0f;
+
+    if (lig.x < color1.x ||
+        lig.y < color1.y ||
+        lig.z < color1.z)
+    {
+        lig.x = color1.x;
+        lig.y = color1.y;
+        lig.z = color1.z;
+    }
+    else if (lig.x > color1.x && lig.x < color2.x ||
+             lig.y > color1.y && lig.y < color2.y ||
+             lig.z > color1.z && lig.z < color2.z)
+         {
+            lig = color2;
+         }
+    else if (lig.x > color2.x && lig.x < color3.x || 
+             lig.y > color2.y && lig.x < color3.y || 
+             lig.z > color2.z && lig.x < color3.z)
+         {
+            lig.x = color3.x;
+            lig.y = color3.y;
+            lig.z = color3.z;
+         }
+
+    // step-1 ライトの効果を一律で底上げする
     float4 finalColor = g_texture.Sample(g_sampler, psIn.uv);
 
+
+    finalColor.x = 1.0f - finalColor.x;
+    finalColor.y = 1.0f - finalColor.y;
+    finalColor.z = 1.0f - finalColor.z;
     // テクスチャカラーに求めた光を乗算して最終出力カラーを求める
     finalColor.xyz *= lig;
 
