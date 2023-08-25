@@ -25,11 +25,30 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     //////////////////////////////////////
 
     // step-1 ワイプ演出を行うSpriteの初期化。
+    SpriteInitData spriteInitData;
+
+    spriteInitData.m_ddsFilePath[0] = "Assets/image/test.dds";
+
+    spriteInitData.m_fxFilePath = "Assets/shader/sample.fx";
+
+    spriteInitData.m_width = 1280.0f;
+    spriteInitData.m_height = 720.0f;
+
+    float wipeSize = 0;
+    spriteInitData.m_expandConstantBuffer = &wipeSize;
+    spriteInitData.m_expandConstantBufferSize = sizeof(wipeSize);
+
+    Sprite test2D;
+
+    test2D.Init(spriteInitData);
 
     //////////////////////////////////////
     // 初期化を行うコードを書くのはここまで！！！
     //////////////////////////////////////
     auto& renderContext = g_graphicsEngine->GetRenderContext();
+
+
+    bool move = false;
 
     // ここからゲームループ
     while (DispatchWindowMessage())
@@ -42,8 +61,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
         //////////////////////////////////////
 
         // step-2 ワイプサイズを増やして少しずつワイプさせる。
+        
+        if (!move)
+        {
+            wipeSize += 5.0f * 10;
+            if (wipeSize > spriteInitData.m_width)move = true;
+        }
+        if (move)
+        {
+            wipeSize -= 5.0f * 10;
+            if (wipeSize < 0)move = false;
+        }
 
         // step-3 スプライトのドローコールを実行する
+        test2D.Draw(renderContext);
 
         //////////////////////////////////////
         //絵を描くコードを書くのはここまで！！！

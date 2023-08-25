@@ -25,8 +25,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     //////////////////////////////////////
 
     // step-1 ワイプパラメータ構造体を定義する
+    struct WipeParam
+    {
+        Vector2 wipeDir;
+        float wipeSize;
+    };
 
     // step-2 ワイプパラメータを初期化する
+    WipeParam wipeParam;
+
+    wipeParam.wipeDir.Set(1.0f, 1.0f);
+    wipeParam.wipeDir.Normalize();
+
+    wipeParam.wipeSize = 0.0f;
 
     // まずはSpriteクラスの初期化オブジェクトを作成する
     SpriteInitData spriteInitData;
@@ -53,7 +64,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     // 初期化を行うコードを書くのはここまで！！！
     //////////////////////////////////////
     auto& renderContext = g_graphicsEngine->GetRenderContext();
-
+    bool a = false;
     // ここからゲームループ
     while (DispatchWindowMessage())
     {
@@ -63,7 +74,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
         //////////////////////////////////////
         // ここから絵を描くコードを記述する
         //////////////////////////////////////
-        wipeParam.wipeSize += 5.0f;
+        if (!a)
+        {
+            wipeParam.wipeSize += 5.0f * 10;
+            if (wipeParam.wipeSize > 1280)
+            {
+                a = true;
+            }
+        }
+        else
+        {
+            wipeParam.wipeSize -= 5.0f * 10;
+            if (wipeParam.wipeSize < 0)
+            {
+                a = false;
+            }
+        }
 
         // スプライトのドローコールを実行する
         test2D.Draw(renderContext);

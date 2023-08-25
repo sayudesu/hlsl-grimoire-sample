@@ -40,7 +40,15 @@ float4 PSMain(PSInput In) : SV_Target0
 {
     float4 color = colorTexture.Sample(Sampler, In.uv);
 
+    float Y = 0.299f * color.r + 0.587f * color.g + 0.114f * color.b;
+    
     // step-1 画像を徐々にセピア調に変化させていく
-
+    float4 sepiaColor;
+    sepiaColor.r = Y * 0.9f;
+    sepiaColor.g = Y * 0.7f;
+    sepiaColor.b = Y * 0.4f;
+    
+    color.xyz = lerp(color, sepiaColor, sepiaRate);
+    
     return color;
 }
